@@ -6,15 +6,15 @@ steps:
     args: [
       'build',
       '-t',
-      'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}',
-      './recommendation-app'  # Path to the directory containing the Dockerfile
+      'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}',
+      './cart-app'  # Path to the directory containing the Dockerfile
     ]
 
   # Step 2: Push the container image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}'
+      - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}'
     id: 'PUSH'
     waitFor: ['BUILD']
 
@@ -23,8 +23,8 @@ steps:
     id: 'DEPLOY'
     args:
       - run
-      - --filename=recommendation-app/kubernetes/deployment.yaml
-      - --image=us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}
+      - --filename=cart-app/deployment.yaml
+      - --image=us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}
       - --cluster=tf-cluster
       - --location=us-central1
       - --project=ishamirulinda-sdlc
@@ -33,9 +33,8 @@ steps:
 # Images to push to Artifact Registry.
 # Cloud Build automatically pushes images listed here after the steps are done.
 images:
-  - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}'
+  - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}'
 
 options:
   requestedVerifyOption: VERIFIED
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-  
