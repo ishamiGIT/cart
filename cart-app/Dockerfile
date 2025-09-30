@@ -6,6 +6,11 @@ ENV PYTHONUNBUFFERED True
 # Copy local code to the container image.
 ENV APP_HOME /app
 WORKDIR $APP_HOME
+
+# Copy requirements.txt and install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . ./
 
 # Install production dependencies.
