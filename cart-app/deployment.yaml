@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-test-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cart-app
+  template:
+    metadata:
+      labels:
+        app: cart-app
+    spec:
+      containers:
+        - name: cart-app
+          image: "us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:IMAGE_PLACEHOLDER"
+          ports:
+            - containerPort: 8080
