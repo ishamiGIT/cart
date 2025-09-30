@@ -1,52 +1,41 @@
 steps:
-  # Build the container image
+  # Step 1: Build the Docker image
+  # The image is tagged with the Git short commit SHA ($SHORT_SHA).
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'BUILD'
     args: [
-      "build",
-      "-t", "us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:$COMMIT_SHA",
-      "-t", "us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:latest",
-      "cart-app"
+      'build',
+      '-t',
+      'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}',
+      './recommendation-app'  # Path to the directory containing the Dockerfile
     ]
 
-  # Push the image to Artifact Registry with both commit SHA and latest tags
+  # Step 2: Push the container image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ["push", "us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:$COMMIT_SHA"]
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ["push", "us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:latest"]
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}'
+    id: 'PUSH'
+    waitFor: ['BUILD']
 
-  # Get GKE credentials
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args: [
-      "container", "clusters", "get-credentials", "${_GKE_CLUSTER}",
-      "--region", "${_GKE_LOCATION}",
-      "--project", "$PROJECT_ID"
-    ]
+  # Step 3: Deploy to GKE using gke-deploy
+  - name: "gcr.io/cloud-builders/gke-deploy"
+    id: 'DEPLOY'
+    args:
+      - run
+      - --filename=recommendation-app/kubernetes/deployment.yaml
+      - --image=us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}
+      - --cluster=tf-cluster
+      - --location=us-central1
+      - --project=ishamirulinda-sdlc
+    waitFor: ['PUSH']
 
-  # Update the image for the Kubernetes Deployment
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args: [
-      "set", "image",
-      "deployment/${_K8S_DEPLOYMENT}",
-      "${_K8S_CONTAINER}=us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:$COMMIT_SHA",
-      "--namespace", "${_K8S_NAMESPACE}"
-    ]
-    env:
-      - 'CLOUDSDK_COMPUTE_REGION=${_GKE_LOCATION}'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+# Images to push to Artifact Registry.
+# Cloud Build automatically pushes images listed here after the steps are done.
+images:
+  - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}'
 
-images: [
-  "us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:$COMMIT_SHA",
-  "us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:latest"
-]
-
-# Substitution variables to be defined in the trigger settings
-substitutions:
-  _GKE_CLUSTER: "bugbash-cluster-1"  # Replace with your cluster name
-  _GKE_LOCATION: "us-central1"      # Replace with your cluster region (e.g., us-central1)
-  _K8S_DEPLOYMENT: "ir-deployment-1" # Replace with your Kubernetes Deployment name
-  _K8S_CONTAINER: "nginx"   # Replace with the container name in your Deployment spec
-  _K8S_NAMESPACE: "default"            # Replace with your Kubernetes namespace
 options:
   requestedVerifyOption: VERIFIED
-  logging: CLOUD_LOGGING_ONLY
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+  
