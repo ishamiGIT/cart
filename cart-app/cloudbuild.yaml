@@ -44,7 +44,7 @@ images: [
 substitutions:
   _GKE_CLUSTER: "bugbash-cluster-1"  # Replace with your cluster name
   _GKE_LOCATION: "us-central1"      # Replace with your cluster region (e.g., us-central1)
-  _K8S_DEPLOYMENT: "hack-deployment" # Replace with your Kubernetes Deployment name
+  _K8S_DEPLOYMENT: "ir-deployment-1" # Replace with your Kubernetes Deployment name
   _K8S_CONTAINER: "cart-app-container"   # Replace with the container name in your Deployment spec
   _K8S_NAMESPACE: "default"            # Replace with your Kubernetes namespace
 options:
