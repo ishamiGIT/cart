@@ -6,8 +6,8 @@ steps:
     args: [
       'build',
       '-t',
-      'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}',
-      './recommendation-app'  # Path to the directory containing the Dockerfile
+      'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}',
+      './cart-app'  # Path to the directory containing the Dockerfile
     ]
 
   # Step 2: Update the Kubernetes deployment manifest in the workspace
@@ -20,9 +20,9 @@ steps:
       - '-c'
       - |
         echo "Updating deployment.yaml to use image tag: ${SHORT_SHA}"
-        sed -i "s|:IMAGE_PLACEHOLDER|:${SHORT_SHA}|g" recommendation-app/kubernetes/deployment.yaml
+        sed -i "s|:IMAGE_PLACEHOLDER|:${SHORT_SHA}|g" cart-app/deployment.yaml
         echo "--- Updated deployment.yaml for this build ---"
-        cat recommendation-app/kubernetes/deployment.yaml
+        cat cart-app/deployment.yaml
         echo "--- End of deployment.yaml ---"
 
   # Step 3: Deploy to Kubernetes
@@ -36,12 +36,12 @@ steps:
         gcloud container clusters get-credentials tf-cluster --region us-central1 --project ishamirulinda-sdlc
 
         # Apply the manifest, kubectl will now use the credentials obtained above
-        kubectl apply -f recommendation-app/kubernetes/deployment.yaml
+        kubectl apply -f cart-app/deployment.yaml
 
 # Images to push to Artifact Registry.
 # Cloud Build automatically pushes images listed here after the steps are done.
 images:
-  - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/recommendation-app:${SHORT_SHA}'
+  - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}'
 
 options:
   requestedVerifyOption: VERIFIED
