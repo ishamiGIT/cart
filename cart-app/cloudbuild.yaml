@@ -10,11 +10,11 @@ steps:
       './cart-app'  # Path to the directory containing the Dockerfile
     ]
   # Step 1.5: PUSH the image, and see if that stops the image backoff errors
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}'
-    id: 'PUSH'
+  #- name: 'gcr.io/cloud-builders/docker'
+  #  args:
+  #    - 'push'
+  #    - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}'
+  #  id: 'PUSH'
 
   # Step 2: Update the Kubernetes deployment manifest in the workspace
   # This command replaces the ':IMAGE_PLACEHOLDER' tag in the deployment.yaml
