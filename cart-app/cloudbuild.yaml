@@ -31,18 +31,25 @@ steps:
         cat cart-app/deployment.yaml
         echo "--- End of deployment.yaml ---"
 
-  # Step 3: Deploy to Kubernetes
-  - name: 'gcr.io/cloud-builders/gcloud' # Corrected path
-    id: 'Deploy'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        # Get credentials for the GKE cluster
-        gcloud container clusters get-credentials tf-cluster --region us-central1 --project ishamirulinda-sdlc
+  # Step 3: Deploy to GKE using gke-deploy
 
-        # Apply the manifest, kubectl will now use the credentials obtained above
-        kubectl apply -f cart-app/deployment.yaml
+  - name: "gcr.io/cloud-builders/gke-deploy"
+
+    id: 'DEPLOY'
+
+    args:
+
+      - run
+
+      - --filename=cart-app/deployment.yaml
+
+      - --image=us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}
+
+      - --cluster=tf-cluster
+
+      - --location=us-central1
+
+      - --project=ishamirulinda-sdlc
 
 # Images to push to Artifact Registry.
 # Cloud Build automatically pushes images listed here after the steps are done.
