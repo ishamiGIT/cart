@@ -21,23 +21,6 @@ steps:
     ]
 
 
-
-  # Step 2: Push the container image to Artifact Registry
-
-  - name: 'gcr.io/cloud-builders/docker'
-
-    args:
-
-      - 'push'
-
-      - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}'
-
-    id: 'PUSH'
-
-    waitFor: ['BUILD']
-
-
-
   # Step 3: Deploy to GKE using gke-deploy
 
   - name: "gcr.io/cloud-builders/gke-deploy"
@@ -57,8 +40,6 @@ steps:
       - --location=us-central1
 
       - --project=ishamirulinda-sdlc
-
-    waitFor: ['PUSH']
 
 
 
