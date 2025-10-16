@@ -12,7 +12,7 @@ def f(x):
 	while True:
 	    startTime = datetime.now()
 	    while (datetime.now() - startTime).total_seconds() < CPU_UTIL:
-	        math.factorial(10) # Or any other computation here
+	        math.factorial(11) # Or any other computation here
 	    time.sleep(1-CPU_UTIL)
 
 def main():
