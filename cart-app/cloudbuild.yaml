@@ -29,6 +29,10 @@ steps:
       - --location=us-central1
       - --project=ishamirulinda-sdlc
     waitFor: ['PUSH']
+  - name: 'alpine' # Using a small image for shell utilities like sed
+    id: 'UpdateManifest'
+    entrypoint: 'sh'
+    args: ['sleep', '120']
 
 # Images to push to Artifact Registry.
 # Cloud Build automatically pushes images listed here after the steps are done.
