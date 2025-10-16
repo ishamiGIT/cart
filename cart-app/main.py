@@ -4,7 +4,7 @@ from multiprocessing import Pool
 from multiprocessing import cpu_count
 import time
 
-SAMPLE = "Something-CHange-6"
+SAMPLE = "Something-CHange-7"
 
 CPU_UTIL = 0.01
 
@@ -12,7 +12,7 @@ def f(x):
 	while True:
 	    startTime = datetime.now()
 	    while (datetime.now() - startTime).total_seconds() < CPU_UTIL:
-	        math.factorial(12) # Or any other computation here
+	        math.factorial(10) # Or any other computation here
 	    time.sleep(1-CPU_UTIL)
 
 def main():
