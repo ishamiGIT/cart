@@ -36,7 +36,7 @@ steps:
         gcloud container clusters get-credentials tf-cluster --region us-central1 --project ishamirulinda-sdlc
 
         # Apply the manifest, kubectl will now use the credentials obtained above
-        kubectl apply -f recommendation-app/kubernetes/deployment.yaml
+        kubectl apply -f recommendation-app/deployment.yaml
 
 # Images to push to Artifact Registry.
 # Cloud Build automatically pushes images listed here after the steps are done.
