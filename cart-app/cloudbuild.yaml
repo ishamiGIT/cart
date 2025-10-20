@@ -20,9 +20,9 @@ steps:
       - '-c'
       - |
         echo "Updating deployment.yaml to use image tag: ${SHORT_SHA}"
-        sed -i "s|:IMAGE_PLACEHOLDER|:${SHORT_SHA}|g" recommendation-app/kubernetes/deployment.yaml
+        sed -i "s|:IMAGE_PLACEHOLDER|:${SHORT_SHA}|g" recommendation-app/deployment.yaml
         echo "--- Updated deployment.yaml for this build ---"
-        cat recommendation-app/kubernetes/deployment.yaml
+        cat recommendation-app/deployment.yaml
         echo "--- End of deployment.yaml ---"
 
   # Step 3: Deploy to Kubernetes
