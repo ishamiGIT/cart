@@ -1,25 +1,24 @@
-from datetime import datetime
-import math
-from multiprocessing import Pool
-from multiprocessing import cpu_count
+import sys
 import time
+# Set this constant to  "True" to trigger OOM, False to prevent it
+TRIGGER_OOM = False  # Change this to , False to disable OOM triggering
 
-SAMPLE = "Something-CHange-3"
+def trigger_oom():
+    """Continuously tries to allocate memory until an OutOfMemoryError occurs (unless TRIGGER_OOM is False)."""
 
-CPU_UTIL = 0.01
+    chunk_size = 1024 * 1024 * 100  # 10 Megabytes (adjust as needed)
+    large_list = []
+    iteration = 0
 
-def f(x):
-	while True:
-	    startTime = datetime.now()
-	    while (datetime.now() - startTime).total_seconds() < CPU_UTIL:
-	        math.factorial(10) # Or any other computation here
-	    time.sleep(1-CPU_UTIL)
+    while True:
+      iteration += 1
+      print(f"Iteration {iteration}: Allocating {chunk_size // (1024 * 1024)} MB...")  # Progress indicator
 
-def main():
-	processes = cpu_count()*2
-	pool = Pool(processes)
-	pool.map(f, range(processes))
+      if TRIGGER_OOM:  # Only allocate if TRIGGER_OOM is True
+        large_list.extend([0] * chunk_size)
+
+      time.sleep(0.1)  # Small delay
 
 
-if __name__ == '__main__':
-	main()
+if __name__ == "__main__":
+    trigger_oom()
