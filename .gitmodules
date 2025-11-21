@@ -1,0 +1,3 @@
+[submodule "ghcr-test"]
+	path = ghcr-test
+	url = "https://github.com/khalkie/ghcr-test/tree/main#"
