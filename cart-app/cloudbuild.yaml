@@ -6,7 +6,7 @@ steps:
     args: [
       'build',
       '-t',
-      'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}',
+      'us-central1-docker.pkg.dev/sdlc-test-project-sbwu/sdlc-demo/cart-app:${SHORT_SHA}',
       './cart-app'  # Path to the directory containing the Dockerfile
     ]
 
@@ -14,7 +14,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}'
+      - 'us-central1-docker.pkg.dev/sdlc-test-project-sbwu/sdlc-demo/cart-app:${SHORT_SHA}'
     id: 'PUSH'
     waitFor: ['BUILD']
 
@@ -24,10 +24,10 @@ steps:
     args:
       - run
       - --filename=cart-app/deployment.yaml
-      - --image=us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}
-      - --cluster=tf-cluster
+      - --image=us-central1-docker.pkg.dev/sdlc-test-project-sbwu/sdlc-demo/cart-app:${SHORT_SHA}
+      - --cluster=deployment-1-cluster
       - --location=us-central1
-      - --project=ishamirulinda-sdlc
+      - --project=sdlc-test-project-sbwu
     waitFor: ['PUSH']
   - name: 'ubuntu'
     args: ['sleep', '120']
@@ -36,7 +36,7 @@ steps:
 # Images to push to Artifact Registry.
 # Cloud Build automatically pushes images listed here after the steps are done.
 images:
-  - 'us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app:${SHORT_SHA}'
+  - 'us-central1-docker.pkg.dev/sdlc-test-project-sbwu/sdlc-demo/cart-app:${SHORT_SHA}'
 
 options:
   requestedVerifyOption: VERIFIED
