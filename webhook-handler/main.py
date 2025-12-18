@@ -6,7 +6,7 @@ from google.cloud import pubsub_v1
 app = Flask(__name__)
 
 # --- HARDCODED CONFIGURATION ---
-PROJECT_ID = "ishamirulinda-sdlc"
+PROJECT_ID = "seven-argo-test"
 TOPIC_ID = "ai-metrics-webhook"
 # -------------------------------
 
