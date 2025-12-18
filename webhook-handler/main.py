@@ -17,18 +17,20 @@ topic_path = publisher.topic_path(PROJECT_ID, TOPIC_ID)
 def webhook():
 
     event_type = request.headers.get('X-GitHub-Event')
-    
-    if event_type == 'pull_request':
-        try:
-            data_str = json.dumps(request.json)
-            future = publisher.publish(topic_path, data_str.encode("utf-8"))
-            message_id = future.result()
-            return jsonify({"status": "published", "message_id": message_id}), 200
-        except Exception as e:
-            print(f"PubSub Error: {e}") # Log error for Cloud Run logs
-            return jsonify({"error": str(e)}), 500
+    print(f"event_type: {event_type}")
+    if event_type != 'pull_request':
+        return jsonify({"status": "ignored", "reason": "not a PR event"}), 200
 
-    return jsonify({"status": "ignored", "reason": "not a PR event"}), 200
+    try:
+        data_str = json.dumps(request.json)
+        future = publisher.publish(topic_path, data_str.encode("utf-8"))
+        message_id = future.result()
+        return jsonify({"status": "published", "message_id": message_id}), 200
+    except Exception as e:
+        print(f"PubSub Error: {e}") # Log error for Cloud Run logs
+        return jsonify({"error": str(e)}), 500
+
+    
 
 @app.route('/', )
 def hello():
