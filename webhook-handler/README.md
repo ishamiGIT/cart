@@ -17,6 +17,6 @@
 
 The PR webhook events seem to work consistently now.
 
-The test "ping" event that the webhook sends when you first set almost always fails with 502 for some reason. 
+The test "ping" event that the webhook sends when you first set it up almost always fails with 502. 
 
 `curl`ing with no payload works, with a large payload it also 502s. Even though the actual PR events sent from the webhook work. no idea
