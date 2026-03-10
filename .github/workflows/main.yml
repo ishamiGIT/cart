@@ -33,6 +33,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./cart-app
+          file: ./cart-app/Dockerfile
           push: true
           tags: ghcr.io/ishamigit/cart:test
           # platforms: linux/amd64,linux/arm64
