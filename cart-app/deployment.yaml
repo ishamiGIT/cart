@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: cart-app
-          image: "us-central1-docker.pkg.dev/ishamirulinda-sdlc/sdlc-demo/cart-app"
+          image: "us-west2-docker.pkg.dev/sdlc-og-test/source-scan-test/cart-app"
           ports:
             - containerPort: 8080
