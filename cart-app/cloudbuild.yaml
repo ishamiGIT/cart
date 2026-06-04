@@ -1,6 +1,43 @@
 steps:
-  - name: gcr.io/cloud-builders/docker
-    args: ["build", "-t", "us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:latest", "cart-app"]
-images: ["us-central1-docker.pkg.dev/$PROJECT_ID/sdlc-demo/cart-app:latest"]
+  # Step 1: Build the Docker image
+  # The image is tagged with the Git short commit SHA ($SHORT_SHA).
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'BUILD'
+    args: [
+      'build',
+      '-t',
+      'us-west2-docker.pkg.dev/sdlc-og-test/source-scan-test/cart-app:${SHORT_SHA}',
+      './cart-app'  # Path to the directory containing the Dockerfile
+    ]
+
+  # Step 2: Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-west2-docker.pkg.dev/sdlc-og-test/source-scan-test/cart-app:${SHORT_SHA}'
+    id: 'PUSH'
+    waitFor: ['BUILD']
+
+  # Step 3: Deploy to GKE using gke-deploy
+  - name: "gcr.io/cloud-builders/gke-deploy"
+    id: 'DEPLOY'
+    args:
+      - run
+      - --filename=cart-app/deployment.yaml
+      - --image=us-west2-docker.pkg.dev/sdlc-og-test/source-scan-test/cart-app:${SHORT_SHA}
+      - --cluster=tf-cluster
+      - --location=us-central1
+      - --project=ishamirulinda-sdlc
+    waitFor: ['PUSH']
+  - name: 'ubuntu'
+    args: ['sleep', '120']
+    id: 'eepy'
+
+# Images to push to Artifact Registry.
+# Cloud Build automatically pushes images listed here after the steps are done.
+images:
+  - 'us-west2-docker.pkg.dev/sdlc-og-test/source-scan-test/cart-app:${SHORT_SHA}'
+
 options:
   requestedVerifyOption: VERIFIED
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET

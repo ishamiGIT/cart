@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-test-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cart-app
+  template:
+    metadata:
+      labels:
+        app: cart-app
+    spec:
+      containers:
+        - name: cart-app
+          image: "us-west2-docker.pkg.dev/sdlc-og-test/source-scan-test/cart-app"
+          ports:
+            - containerPort: 8080
