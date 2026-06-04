@@ -1,5 +1,6 @@
 steps:
   # Step 1: Build the Docker image
+  # changed some comments
   # The image is tagged with the Git short commit SHA ($SHORT_SHA).
   - name: 'gcr.io/cloud-builders/docker'
     id: 'BUILD'
